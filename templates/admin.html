@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Admin Panel | Accident Severity AI</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family: Arial;
+padding:40px;
+background:#0f172a;
+color:white;
+margin:0;
+}
+
+/* Branding */
+
+.brand{
+text-align:center;
+margin-bottom:25px;
+}
+
+.brand h1{
+margin:0;
+font-size:30px;
+}
+
+.brand p{
+margin-top:5px;
+font-size:14px;
+opacity:0.8;
+}
+
+/* Tables */
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+padding:10px;
+border:1px solid rgba(255,255,255,0.2);
+text-align:center;
+}
+
+th{
+background:#1e293b;
+}
+
+/* Buttons */
+
+button{
+padding:12px 20px;
+border:none;
+background:#22c55e;
+color:white;
+font-size:16px;
+border-radius:8px;
+cursor:pointer;
+margin-top:20px;
+}
+
+button:hover{
+background:#16a34a;
+}
+
+.dashboard-buttons{
+margin-bottom:30px;
+}
+
+/* Footer */
+
+.footer{
+text-align:center;
+margin-top:40px;
+font-size:13px;
+opacity:0.7;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Branding -->
+
+<div class="brand">
+<h1>🚦 Accident Severity AI</h1>
+<p>Smart Prediction for Safer Roads</p>
+</div>
+
+<h1>Admin Dashboard</h1>
+
+<h3>Total Users: {{ total_users }}</h3>
+<h3>Total Predictions: {{ total_predictions }}</h3>
+
+
+<div class="dashboard-buttons">
+
+<a href="/analytics">
+<button>📊 Open AI Analytics Dashboard</button>
+</a>
+
+</div>
+
+
+<h2>Accident Severity Distribution</h2>
+
+<canvas id="severityChart"></canvas>
+
+<script>
+
+const severityLabels = {{ severity_labels | tojson }};
+const severityValues = {{ severity_values | tojson }};
+
+new Chart(document.getElementById("severityChart"),{
+
+type:"pie",
+
+data:{
+labels:severityLabels,
+
+datasets:[{
+data:severityValues,
+
+backgroundColor:[
+"#2ecc71",
+"#f39c12",
+"#e74c3c"
+]
+}]
+}
+
+});
+
+</script>
+
+<hr>
+
+<h2>👥 Users</h2>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Username</th>
+<th>Admin</th>
+</tr>
+
+{% for u in users %}
+
+<tr>
+<td>{{ u.id }}</td>
+<td>{{ u.username }}</td>
+<td>{{ u.is_admin }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<h2>📊 All Predictions</h2>
+
+<table>
+
+<tr>
+<th>User ID</th>
+<th>Severity</th>
+<th>Confidence</th>
+<th>Day</th>
+<th>Weather</th>
+</tr>
+
+{% for p in predictions %}
+
+<tr>
+<td>{{ p.user_id }}</td>
+<td>{{ p.severity }}</td>
+<td>{{ p.confidence }}%</td>
+<td>{{ p.day }}</td>
+<td>{{ p.weather }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<div class="footer">
+© 2026 Accident Severity AI | Built with Flask & Machine Learning
+</div>
+
+</body>
+</html>
+
+<!-- from app import app, db, User
+
+with app.app_context():
+    user = User.query.filter_by(username="admin").first()
+    user.is_admin = True
+    db.session.commit() -->

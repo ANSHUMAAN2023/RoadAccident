@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Model Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">🚦 Accident Severity AI</div>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+    </nav>
+</header>
+
+
+<div class="dashboard-container">
+
+<h1>📊 Model Analytics Dashboard</h1>
+
+
+<div class="stats-grid">
+
+<div class="stat-card">
+<h3>Best Model</h3>
+<p>{{ results | dictsort(by='value') | last | first if results else "N/A" }}</p>
+</div>
+
+<div class="stat-card">
+<h3>Algorithm</h3>
+<p>Supervised Classification</p>
+</div>
+
+<div class="stat-card">
+<h3>Target</h3>
+<p>Accident Severity</p>
+</div>
+
+</div>
+
+
+<div class="chart-section">
+<h2>Model Accuracy</h2>
+
+<img src="{{ url_for('static', filename='model_accuracy_comparison.png') }}" class="chart-img">
+
+</div>
+
+
+<div class="chart-section">
+
+<h2>Accuracy Table</h2>
+
+<table class="comparison-table">
+
+<tr>
+<th>Model</th>
+<th>Accuracy</th>
+</tr>
+
+{% for model, acc in results.items() %}
+<tr>
+<td>{{ model }}</td>
+<td>{{ (acc * 100)|round(2) }}%</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+
+{% if feature_plot_available %}
+<div class="chart-section">
+
+<h2>Feature Importance</h2>
+
+<img src="{{ url_for('static', filename='feature_importance.png') }}" class="chart-img">
+
+</div>
+{% endif %}
+
+
+<div class="chart-section">
+
+<h2>Confusion Matrices</h2>
+
+<div class="confusion-grid">
+
+<img src="{{ url_for('static', filename='Logistic_Regression_confusion_matrix.png') }}">
+<img src="{{ url_for('static', filename='Random_Forest_confusion_matrix.png') }}">
+<img src="{{ url_for('static', filename='XGBoost_confusion_matrix.png') }}">
+
+</div>
+
+</div>
+
+</div>
+
+
+<footer class="footer">
+<p>© 2026 Accident Severity Prediction System</p>
+</footer>
+
+</body>
+</html>

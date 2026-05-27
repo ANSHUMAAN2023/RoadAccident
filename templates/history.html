@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Prediction History | Accident Severity AI</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        min-height: 100vh;
+        padding: 40px;
+        color: white;
+        margin: 0;
+      }
+
+      /* Branding */
+
+      .brand {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 30px;
+      }
+
+      .brand p {
+        margin-top: 5px;
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      /* Header */
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .header a {
+        color: white;
+        text-decoration: none;
+        margin-left: 15px;
+      }
+
+      /* Clear Button */
+
+      .clear-btn {
+        background: #ff4d4d;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      /* Glass Table */
+
+      .table-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 25px;
+        border-radius: 15px;
+      }
+
+      /* Table */
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+      }
+
+      th {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      /* Footer */
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 13px;
+        opacity: 0.8;
+      }
+      /* Navigation container */
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      /* Links */
+
+      .nav-actions a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      /* Clear button */
+
+      .clear-btn {
+        background: linear-gradient(135deg, #ff4b4b, #ff6b6b);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      }
+
+      /* Hover effect */
+
+      .clear-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Branding -->
+
+    <div class="brand">
+      <h1>🚦 Accident Severity AI</h1>
+      <p>Smart Prediction for Safer Roads</p>
+    </div>
+
+    <div class="header">
+      <h2>📊 Prediction History</h2>
+
+      <div class="nav-actions">
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+
+        <form action="/clear_history" method="POST">
+          <button
+            class="clear-btn"
+            onclick="
+              return confirm('Are you sure you want to delete all records?');
+            "
+          >
+            🗑 Clear
+          </button>
+        </form>
+
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <tr>
+          <th>Severity</th>
+          <th>Confidence</th>
+          <th>Day</th>
+          <th>Weather</th>
+        </tr>
+
+        {% for p in predictions %}
+
+        <tr>
+          <td>{{ p.severity }}</td>
+          <td>{{ p.confidence }}%</td>
+          <td>{{ p.day }}</td>
+          <td>{{ p.weather }}</td>
+        </tr>
+
+        {% endfor %}
+      </table>
+    </div>
+
+    <div class="footer">© 2026 Accident Severity AI. All rights reserved.</div>
+  </body>
+</html>

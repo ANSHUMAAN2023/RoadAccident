@@ -1,0 +1,265 @@
+<!doctype html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Accident Severity AI</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="navbar">
+
+<div class="logo">🚦 Accident Severity AI</div>
+
+<nav>
+
+<a href="/">Home</a>
+<a href="/dashboard">Dashboard</a>
+<a href="/history">History</a>
+
+<a href="/my_analytics">📊 My Analytics</a>
+
+{% if current_user.is_admin %}
+<a href="/admin">Admin</a>
+{% endif %}
+
+<a href="/logout">Logout</a>
+
+<span class="user">👤 {{ current_user.username }}</span>
+
+</nav>
+
+</header>
+
+
+<!-- MAIN -->
+<div class="container">
+
+<!-- FORM CARD -->
+<div class="card form-card">
+
+<h2>Predict Accident Severity</h2>
+
+{% if error %}
+<div class="error-message">{{ error }}</div>
+{% endif %}
+
+<form action="/predict" method="POST">
+
+<select name="Day_of_week" required>
+<option value="" disabled selected>Select Day</option>
+<option value="Monday">Monday</option>
+<option value="Tuesday">Tuesday</option>
+<option value="Wednesday">Wednesday</option>
+<option value="Thursday">Thursday</option>
+<option value="Friday">Friday</option>
+<option value="Saturday">Saturday</option>
+<option value="Sunday">Sunday</option>
+</select>
+
+
+<select name="Age_band_of_driver" required>
+<option value="" disabled selected>Driver Age</option>
+<option value="Under 18">Under 18</option>
+<option value="18-30">18-30</option>
+<option value="31-50">31-50</option>
+<option value="Over 51">Over 51</option>
+</select>
+
+
+<select name="Sex_of_driver" required>
+<option value="" disabled selected>Sex</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+</select>
+
+
+<select name="Driving_experience" required>
+<option value="" disabled selected>Experience</option>
+<option value="No Licence">No Licence</option>
+<option value="Below 1yr">Below 1yr</option>
+<option value="1-2yr">1-2yr</option>
+<option value="2-5yr">2-5yr</option>
+<option value="5-10yr">5-10yr</option>
+<option value="Above 10yr">Above 10yr</option>
+</select>
+
+
+<select name="Weather_conditions" required>
+<option value="" disabled selected>Weather</option>
+<option value="Normal">Normal</option>
+<option value="Raining">Raining</option>
+<option value="Fog">Fog</option>
+<option value="Snow">Snow</option>
+<option value="Windy">Windy</option>
+</select>
+
+
+<select name="Road_surface_conditions" required>
+<option value="" disabled selected>Road Surface</option>
+<option value="Dry">Dry</option>
+<option value="Wet">Wet</option>
+<option value="Flood">Flood</option>
+</select>
+
+
+<select name="Light_conditions" required>
+<option value="" disabled selected>Light</option>
+<option value="Daylight">Daylight</option>
+<option value="Dark - Lighted">Dark - Lighted</option>
+<option value="Dark - No Lighting">Dark - No Lighting</option>
+</select>
+
+
+<select name="Type_of_collision" required>
+<option value="" disabled selected>Collision</option>
+<option value="Vehicle with vehicle collision">Vehicle with vehicle collision</option>
+<option value="Vehicle with pedestrian">Vehicle with pedestrian</option>
+<option value="Rollover">Rollover</option>
+<option value="Collision with roadside object">Collision with roadside object</option>
+</select>
+
+<button type="submit">Predict</button>
+
+</form>
+
+</div>
+
+
+<!-- RESULT CARD -->
+<div class="card result-card glass">
+
+{% if prediction_text %}
+
+<h2>Prediction Result</h2>
+
+<div class="prediction-box {{ prediction_text|lower|replace(' ','-') }}">
+{{ prediction_text }}
+</div>
+
+<h3>Confidence: {{ confidence }}%</h3>
+
+
+<!-- Gauge Chart -->
+<div class="gauge-container">
+<canvas id="gaugeChart"></canvas>
+</div>
+
+
+<!-- Probability Chart -->
+<div class="prob-container">
+<canvas id="probChart"></canvas>
+</div>
+
+
+<a href="/history" class="history-btn">View Prediction History</a>
+
+
+<script>
+
+const probData = {{ probabilities | tojson }};
+
+
+// Gauge Chart
+
+const gaugeCanvas = document.getElementById("gaugeChart");
+
+if(gaugeCanvas){
+
+new Chart(gaugeCanvas,{
+
+type:"doughnut",
+
+data:{
+datasets:[{
+data:[{{confidence}}, 100-{{confidence}}],
+backgroundColor:["#ff4d4d","#e6e6e6"],
+borderWidth:0
+}]
+},
+
+options:{
+circumference:180,
+rotation:270,
+plugins:{legend:{display:false}},
+cutout:"70%"
+}
+
+});
+
+}
+
+
+
+// Probability Chart
+
+const probCanvas = document.getElementById("probChart");
+
+if(probCanvas){
+
+new Chart(probCanvas,{
+
+type:"bar",
+
+data:{
+labels:["Slight","Serious","Fatal"],
+datasets:[{
+data:probData,
+
+backgroundColor:[
+"#2ecc71",
+"#f39c12",
+"#e74c3c"
+]
+}]
+},
+
+options:{
+responsive:true,
+plugins:{legend:{display:false}},
+scales:{
+x:{
+ticks:{color:"#ffffff"},
+grid:{color:"rgba(255,255,255,0.1)"}
+},
+y:{
+beginAtZero:true,
+max:1,
+ticks:{color:"#ffffff"},
+grid:{color:"rgba(255,255,255,0.1)"}
+}
+}
+}
+
+});
+
+}
+
+</script>
+
+{% else %}
+
+<h2>Prediction will appear here</h2>
+
+{% endif %}
+
+</div>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+
+<p>© 2026 Accident Severity Prediction System</p>
+
+</footer>
+
+</body>
+</html>

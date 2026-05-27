@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+  <head>
+    <title>AI Accident Risk Analytics</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      body {
+        font-family: Arial;
+        background: #151d2e;
+        color: white;
+        margin: 0;
+      }
+
+      /* HEADER */
+
+      header {
+        background: #020617;
+        padding: 20px;
+        text-align: center;
+      }
+
+      nav a {
+        color: white;
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      nav a:hover {
+        color: #22c55e;
+      }
+
+      /* PAGE */
+
+      .container {
+        text-align: center;
+        padding: 40px;
+      }
+
+      .chart {
+        width: 60%;
+        margin: auto;
+        background: #1e293b;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+
+      /* FOOTER */
+
+      footer {
+        background: #020617;
+        text-align: center;
+        padding: 15px;
+        margin-top: 40px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- HEADER -->
+
+    <header>
+      <h2>🚦 AI Road Accident Risk Predictor</h2>
+
+      <nav>
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/analytics">Analytics</a>
+        <a href="/admin">Admin</a>
+      </nav>
+    </header>
+
+    <!-- PAGE CONTENT -->
+
+    <div class="container">
+      <h1>📊 Accident Risk Analytics</h1>
+
+      <div class="chart">
+        <canvas id="riskChart"></canvas>
+      </div>
+    </div>
+
+    <!-- CHART SCRIPT -->
+
+    <script>
+
+        var risks = {{ risks | tojson }};
+
+        if(risks.length == 0){
+      alert("No predictions found. Make some predictions first.");
+      }
+
+            var high = 0;
+            var medium = 0;
+            var low = 0;
+
+            for(let r of risks){
+
+            if(r == "High") high++;
+            else if(r == "Medium") medium++;
+            else low++;
+
+            }
+
+            new Chart(document.getElementById("riskChart"),{
+
+            type:"bar",
+
+            data:{
+            labels:["High Risk","Medium Risk","Low Risk"],
+
+            datasets:[{
+            label:"Accident Risk Predictions",
+
+            data:[high,medium,low],
+
+            backgroundColor:[
+            "#ef4444",   // High risk - clear red
+            "#facc15",   // Medium risk - yellow
+            "#22c55e"    // Low risk - green
+            ],
+
+            borderColor:[
+            "#b91c1c",
+            "#ca8a04",
+            "#15803d"
+            ],
+
+            borderWidth:2
+            }]
+
+            },
+
+            options:{
+
+            plugins:{
+            legend:{
+            labels:{
+            color:"white",
+            font:{
+            size:14
+            }
+            }
+            }
+            },
+
+            scales:{
+
+            x:{
+            ticks:{
+            color:"white"
+            },
+            grid:{
+            color:"rgba(255,255,255,0.1)"
+            }
+            },
+
+            y:{
+            ticks:{
+            color:"white"
+            },
+            grid:{
+            color:"rgba(255,255,255,0.1)"
+            }
+            }
+
+            }
+
+            }
+
+            });
+    </script>
+
+    <!-- FOOTER -->
+
+    <footer>
+      <p>© 2026 AI Road Accident Predictor</p>
+    </footer>
+  </body>
+</html>
